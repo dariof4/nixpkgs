@@ -37,7 +37,7 @@ buildPythonPackage rec {
 
   src = fetchPypi {
     inherit pname version;
-    hash = "sha256-7zOAEWGvN5Zlq3o0aE8iCYYeOu/VyAOiH7u5nZSHSwM=";
+    sha256 = "sha256-7zOAEWGvN5Zlq3o0aE8iCYYeOu/VyAOiH7u5nZSHSwM=";
   };
 
   patches = [
@@ -58,7 +58,7 @@ buildPythonPackage rec {
     "bokeh"
   ];
 
-  nativeCheckInputs = [
+  checkInputs = [
     mock
     pytest
     pillow
