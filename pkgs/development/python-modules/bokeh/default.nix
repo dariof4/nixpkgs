@@ -52,7 +52,7 @@ buildPythonPackage rec {
   ];
 
   disabled = isPyPy || isPy27;
-
+  postPatch = ''substituteInPlace pyproject.toml --replace "dynamice = [\"version\"]" "version = \"3.1.0\""'';
   nativeBuildInputs = [
     pythonImportsCheckHook
   ];
