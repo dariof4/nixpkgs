@@ -4,18 +4,28 @@
 , isPy3k
 , pytest
 , unicodecsv
+, rustPlatform
 }:
 
 buildPythonPackage rec {
   pname = "jellyfish";
-  version = "0.9.0";
+  version = "0.11.2";
 
+  format = "pyproject";
   disabled = !isPy3k;
 
   src = fetchPypi {
     inherit pname version;
-    sha256 = "40c9a2ffd8bd3016f7611d424120442f627f56d518a106847dc93f0ead6ad79a";
+    sha256 = "sha256-ZU8rFUO5knxEKb1dZvmNH0fm65pOViEuGQf7TuoljFo=";
   };
+
+  cargoDeps = rustPlatform.fetchCargoTarball {
+    inherit src;
+    name = "${pname}-${version}";
+    hash = "sha256-eRjmQoNDqJMWeZPiMGRaZ9LoP3DibSk7NLZKUV1evlk=";
+  };
+
+  nativeBuildInputs = [ rustPlatform.cargoSetupHook rustPlatform.maturinBuildHook ];
 
   nativeCheckInputs = [ pytest unicodecsv ];
 
