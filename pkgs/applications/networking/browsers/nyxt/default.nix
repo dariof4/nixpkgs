@@ -1,4 +1,5 @@
 { stdenv, lib, sbclPackages
+, wrapLisp, sbcl
 , makeWrapper, wrapGAppsHook, gst_all_1
 , glib, gdk-pixbuf, cairo
 , mailcap, pango, gtk3
@@ -6,11 +7,18 @@
 , xclip, notify-osd, enchant
 }:
 
+let
+  sbcl' = wrapLisp {
+    pkg = sbcl;
+    faslExt = "fasl";
+    flags = ["--dynamic-space-size" "2048"];
+  };
+in
 stdenv.mkDerivation rec {
   pname = "nyxt";
-  inherit (sbclPackages.nyxt) version;
+  inherit (sbcl'.pkgs.nyxt) version;
 
-  src = sbclPackages.nyxt;
+  src = sbcl'.pkgs.nyxt;
 
   nativeBuildInputs = [ makeWrapper wrapGAppsHook ];
   gstBuildInputs = with gst_all_1; [
