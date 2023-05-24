@@ -379,15 +379,15 @@ let
 
   nyxt-gtk = build-asdf-system {
     inherit (super.nyxt) pname;
-    version = "2.2.4";
+    version = "3.0.0";
 
     lispLibs = super.nyxt.lispLibs ++ (with super; [
-      cl-cffi-gtk cl-webkit2 mk-string-metrics cl-css
+      cl-cffi-gtk mk-string-metrics cl-css self.cl-colors2 self.nasdf self.prompter self.njson self.nsymbols self.nclasses self.nfiles self.quri self.cl-webkit2 super.cl-gobject-introspection super.bordeaux-threads
     ]);
 
     src = pkgs.fetchzip {
-      url = "https://github.com/atlas-engineer/nyxt/archive/2.2.4.tar.gz";
-      sha256 = "12l7ir3q29v06jx0zng5cvlbmap7p709ka3ik6x29lw334qshm9b";
+      url = "https://github.com/atlas-engineer/nyxt/archive/3.0.0.tar.gz";
+      sha256 = "sha256-SgAoeMIqpXdQ2/MPl2tCDWn3wboGWiIOcCVUFUW89Ms=";
     };
 
     nativeBuildInputs = [ pkgs.makeWrapper ];
@@ -402,7 +402,7 @@ let
 
     buildScript = pkgs.writeText "build-nyxt.lisp" ''
       (load "${super.nyxt.asdfFasl}/asdf.${super.nyxt.faslExt}")
-      (asdf:load-system :nyxt/gtk-application)
+      (asdf:load-system :nyxt/gi-gtk-application)
       (sb-ext:save-lisp-and-die "nyxt" :executable t
                                        #+sb-core-compression :compression
                                        #+sb-core-compression t
@@ -417,10 +417,10 @@ let
       mkdir -p $out/bin
       cp -v nyxt $out/bin
       wrapProgram $out/bin/nyxt \
-        --set WEBKIT_FORCE_SANDBOX 0 \
         --prefix LD_LIBRARY_PATH : $LD_LIBRARY_PATH \
         --prefix XDG_DATA_DIRS : $XDG_ICON_DIRS \
         --prefix XDG_DATA_DIRS : $GSETTINGS_SCHEMAS_PATH \
+        --prefix GI_TYPELIB_PATH : $GI_TYPELIB_PATH \
         --prefix GIO_EXTRA_MODULES ":" ${pkgs.dconf.lib}/lib/gio/modules/ \
         --prefix GIO_EXTRA_MODULES ":" ${pkgs.glib-networking}/lib/gio/modules/
     '';
