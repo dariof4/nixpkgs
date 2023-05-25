@@ -377,7 +377,7 @@ let
     lispLibs = [super.alexandria super.iolib self.nclasses self.quri super.serapeum super.trivial-garbage super.trivial-package-local-nicknames super.trivial-types];
   };
 
-  nyxt-gtk = build-asdf-system {
+  nyxt-gtk = build-with-compile-into-pwd {
     inherit (super.nyxt) pname;
     version = "3.0.0";
 
@@ -402,11 +402,7 @@ let
 
     buildScript = pkgs.writeText "build-nyxt.lisp" ''
       (load "${super.nyxt.asdfFasl}/asdf.${super.nyxt.faslExt}")
-      (asdf:load-system :nyxt/gi-gtk-application)
-      (sb-ext:save-lisp-and-die "nyxt" :executable t
-                                       #+sb-core-compression :compression
-                                       #+sb-core-compression t
-                                       :toplevel #'nyxt:entry-point)
+      (asdf:make :nyxt/gi-gtk-application)
     '';
 
     # Run with WEBKIT_FORCE_SANDBOX=0 if getting a runtime error
